@@ -194,7 +194,6 @@ The platform includes an AI-powered chatbot that can answer questions about:
 
 ![AI Chatbot](C:\Users\USER\.vscode\python1\hack\path-finder-pro\AIBot.png)
 
-*Screenshot 5: AI chatbot interface for instant career guidance*
 
 ---
 
