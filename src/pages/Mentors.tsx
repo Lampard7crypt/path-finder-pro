@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Briefcase, Building2, Clock, UserPlus } from "lucide-react";
+import Loader from "@/components/Loader";
 
 type MentorProfile = {
   id: string;
@@ -133,8 +134,8 @@ const Mentors = () => {
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-muted">
         <Navigation />
-        <div className="container mx-auto px-4 py-16 text-center">
-          <p className="text-muted-foreground">Loading mentors...</p>
+        <div className="container mx-auto px-4 py-16 flex items-center justify-center">
+          <Loader />
         </div>
       </div>
     );

@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { User, Briefcase, Edit, Save, CheckCircle, XCircle, Clock } from "lucide-react";
+import Loader from "@/components/Loader";
 
 const Dashboard = () => {
   const [user, setUser] = useState<any>(null);
@@ -163,8 +164,8 @@ const Dashboard = () => {
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-muted">
         <Navigation />
-        <div className="container mx-auto px-4 py-16 text-center">
-          <p className="text-muted-foreground">Loading...</p>
+        <div className="container mx-auto px-4 py-16 flex items-center justify-center">
+          <Loader />
         </div>
       </div>
     );
