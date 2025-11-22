@@ -98,17 +98,19 @@ const Contact = () => {
               </Card>
             </Link>
 
-            <Card>
-              <CardHeader>
-                <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mb-4">
-                  <MessageSquare className="w-6 h-6 text-secondary" />
-                </div>
-                <CardTitle>Feedback</CardTitle>
-                <CardDescription>
-                  Help us improve by sharing your thoughts and suggestions
-                </CardDescription>
-              </CardHeader>
-            </Card>
+            <Link to="/direct-feedback">
+              <Card className="cursor-pointer hover:shadow-lg transition-shadow border border-secondary/20 hover:border-secondary/50">
+                <CardHeader>
+                  <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mb-4">
+                    <MessageSquare className="w-6 h-6 text-secondary" />
+                  </div>
+                  <CardTitle>Feedback</CardTitle>
+                  <CardDescription>
+                    Help us improve by sharing your thoughts and suggestions
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            </Link>
           </div>
 
           <Card>

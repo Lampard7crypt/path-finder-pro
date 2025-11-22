@@ -8,6 +8,7 @@ import Auth from "./pages/Auth";
 import Mentors from "./pages/Mentors";
 import Contact from "./pages/Contact";
 import DeveloperContacts from "./pages/DeveloperContacts";
+import DirectFeedback from "./pages/DirectFeedback";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/mentors" element={<Mentors />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/developer-contacts" element={<DeveloperContacts />} />
+          <Route path="/direct-feedback" element={<DirectFeedback />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
