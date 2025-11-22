@@ -11,7 +11,8 @@ serve(async (req) => {
   }
 
   try {
-    const { messages } = await req.json();
+    const { messages, stream } = await req.json();
+    const useStream = stream !== false;
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
@@ -35,7 +36,7 @@ serve(async (req) => {
           },
           ...messages,
         ],
-        stream: true,
+        stream: useStream,
       }),
     });
 
@@ -60,14 +61,23 @@ serve(async (req) => {
       throw new Error(`AI gateway error: ${response.status}`);
     }
 
+    if (!useStream) {
+      const json = await response.json();
+      return new Response(JSON.stringify(json), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     return new Response(response.body, {
       headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
     });
   } catch (error) {
     console.error("Chat error:", error);
+    const message = error instanceof Error ? error.message : "Unknown error";
+    const status = message.includes("fetch") || message.includes("network") ? 503 : 500;
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }), 
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      JSON.stringify({ error: message }), 
+      { status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 });

@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send, Bot, User } from "lucide-react";
+import Loader from "@/components/Loader";
 
 type Message = {
   role: "user" | "assistant";
@@ -40,8 +41,29 @@ const ChatBot = () => {
         body: JSON.stringify({ messages: [...messages, userMessage] }),
       });
 
+      const nonStreamFallback = async () => {
+        const fallback = await fetch(CHAT_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          },
+          body: JSON.stringify({ messages: [...messages, userMessage], stream: false }),
+        });
+
+        if (!fallback.ok) throw new Error("Failed to complete chat");
+        const data = await fallback.json();
+        const content = data?.choices?.[0]?.message?.content;
+        if (content) {
+          setMessages((prev) => [...prev, { role: "assistant", content }]);
+        } else {
+          throw new Error("No content returned from AI");
+        }
+      };
+
       if (!response.ok || !response.body) {
-        throw new Error("Failed to start chat stream");
+        await nonStreamFallback();
+        return;
       }
 
       const reader = response.body.getReader();
@@ -97,10 +119,33 @@ const ChatBot = () => {
       }
     } catch (error) {
       console.error("Chat error:", error);
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: "Sorry, I encountered an error. Please try again." },
-      ]);
+      try {
+        // Attempt non-stream fallback once if streaming fails
+        const lastUserMessage = userMessage;
+        const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
+        const fallback = await fetch(CHAT_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          },
+          body: JSON.stringify({ messages: [...messages, lastUserMessage], stream: false }),
+        });
+        if (fallback.ok) {
+          const data = await fallback.json();
+          const content = data?.choices?.[0]?.message?.content;
+          if (content) {
+            setMessages((prev) => [...prev, { role: "assistant", content }]);
+            return;
+          }
+        }
+        throw new Error("Fallback failed");
+      } catch {
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: "Sorry, I encountered an error. Please try again." },
+        ]);
+      }
     }
   };
 
@@ -162,8 +207,8 @@ const ChatBot = () => {
               <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
                 <Bot className="w-5 h-5 text-primary animate-pulse" />
               </div>
-              <div className="rounded-lg px-4 py-2 bg-muted">
-                <p className="text-sm">Thinking...</p>
+              <div className="rounded-lg px-4 py-2 bg-muted flex items-center justify-center">
+                <Loader size={24} />
               </div>
             </div>
           )}
