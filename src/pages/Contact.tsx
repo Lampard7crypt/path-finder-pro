@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Mail, MessageSquare, Send } from "lucide-react";
 import { z } from "zod";
+import { Link } from "react-router-dom";
 
 const contactSchema = z.object({
   name: z.string().trim().min(2, "Name must be at least 2 characters").max(100, "Name must be less than 100 characters"),
@@ -83,17 +84,19 @@ const Contact = () => {
           </div>
 
           <div className="grid md:grid-cols-2 gap-6 mb-8">
-            <Card>
-              <CardHeader>
-                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                  <Mail className="w-6 h-6 text-primary" />
-                </div>
-                <CardTitle>Email Us</CardTitle>
-                <CardDescription>
-                  Send us an email and we'll respond within 24 hours
-                </CardDescription>
-              </CardHeader>
-            </Card>
+            <Link to="/developer-contacts">
+              <Card className="cursor-pointer hover:shadow-md transition-shadow">
+                <CardHeader>
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                    <Mail className="w-6 h-6 text-primary" />
+                  </div>
+                  <CardTitle>Email Us</CardTitle>
+                  <CardDescription>
+                    Send us an email and we'll respond within 24 hours
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            </Link>
 
             <Card>
               <CardHeader>
